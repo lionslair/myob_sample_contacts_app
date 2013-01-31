@@ -1,0 +1,12 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^signin/(.*)/$ ./index.php?page=signin&guid=$1 [L,QSA]
+
+RewriteRule ^customers/$ ./index.php?page=contacts&type=customer [L,QSA]
+RewriteRule ^suppliers/$ ./index.php?page=contacts&type=supplier [L,QSA]
+RewriteRule ^employees/$ ./index.php?page=contacts&type=employee [L,QSA]
+
+RewriteRule ^contact/(.*)/(.*)/$ ./index.php?page=contact&type=$1&id=$2 [L,QSA]
+RewriteRule ^edit/(.*)/(.*)/$ ./index.php?page=edit&type=$1&id=$2 [L,QSA]
+RewriteRule ^add/$ ./index.php?page=add [L,QSA]
