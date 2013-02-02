@@ -34,6 +34,7 @@ function getURL($url, $username=NULL, $password=NULL) {
 	$session = curl_init($url); 
 	curl_setopt($session, CURLOPT_HEADER, true); 
 	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt(CURLOPT_SSL_VERIFYPEER, true); // enforce that when we use SSL the verification is correct
 	
 	// if there is a username present, assume we want to use it
 	if($username) {
@@ -226,6 +227,7 @@ function saveContact($type, $contactId, $CoLastName, $FirstName, $IsActive, $Tax
     // Tell curl not to return headers, but do return the response
     curl_setopt($session, CURLOPT_HEADER, false); 
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt(CURLOPT_SSL_VERIFYPEER, true); // enforce that when we use SSL the verification is correct
 
 
 
