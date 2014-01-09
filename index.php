@@ -15,7 +15,7 @@
 //    Copyright (2013) MYOB Technology 
 //
 *******************************************/
-//error_reporting(0);
+error_reporting(0);
 // we'll be using session variables to track some details so lets fire up our session before anything else happens
 session_start();
 

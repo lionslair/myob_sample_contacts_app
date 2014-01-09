@@ -21,7 +21,6 @@ $contact = getContact($type, $id);
 
 $theAddress = $contact->Addresses[0]->Street .', '.$contact->Addresses[0]->City .', '. $contact->Addresses[0]->State .', '.$contact->Addresses[0]->PostCode .', '.$contact->Addresses[0]->Country;
 
-$showMap = true;
 require_once('header.php');
 ?>
 <!-- setup a 2 col responsive page -->
@@ -72,12 +71,12 @@ require_once('header.php');
       			// is this a company or an individual
       			if( $contact->IsIndividual ){
       				// its a person so display first then last name
-      				echo $contact->FirstName .' '. $contact->CoLastName;
-      				$name = $contact->FirstName .' '. $contact->CoLastName;
+      				echo $contact->FirstName .' '. $contact->LastName;
+      				$name = $contact->FirstName .' '. $contact->LastName;
       			} else {
       				// it's a company so display last name
-      				echo $contact->CoLastName;
-      				$name = $contact->CoLastName;
+      				echo $contact->CompanyName;
+      				$name = $contact->CompanyName;
       			}
 
       			// is this contact active or not?
@@ -111,8 +110,8 @@ require_once('header.php');
 			</address>
 
 			<blockquote>
-  				<p><?php // the description often contains * so lets do a basic clean up
-  				echo(str_replace('*', '<br />&bull; ', $contact->Description)); ?></p>
+  				<p><?php // the Notes often contains * so lets do a basic clean up
+  				echo(str_replace('*', '<br />&bull; ', $contact->Notes)); ?></p>
 			</blockquote>
 
 			<!-- lets add a QR code so people can scan the business details to their phone but hide it from iPhone -->

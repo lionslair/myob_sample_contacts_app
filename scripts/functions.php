@@ -28,26 +28,55 @@
  * TODO:
  *   Add error checking on response
  */
-function getURL($url, $username=NULL, $password=NULL) {
-	
-	// setup the session & setup curl options
-	$session = curl_init($url); 
-	curl_setopt($session, CURLOPT_HEADER, true); 
-	curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt(CURLOPT_SSL_VERIFYPEER, true); // enforce that when we use SSL the verification is correct
-	
-	// if there is a username present, assume we want to use it
-	if($username) {
-		// pass the username and password like 'username:password' to curl
-		curl_setopt($session, CURLOPT_USERPWD, $username . ":" . $password);
-	} 
-	
-	// get the response & close the session
-	$response = curl_exec($session); 
-	curl_close($session); 
-	
-	// return what we got
-	return($response);
+function getURL($url, $companyFileUsername = null, $companyFilePassword = null) {
+ 
+	// if we have a username we need to base64_encode it - so lets check if it's set
+	if( isset( $companyFileUsername ) ) {
+		$companyFileToken = base64_encode( $companyFileUsername.':'.$companyFilePassword );
+	} else {
+		$companyFileToken = '';
+	}
+ 
+	// we setup some headers to tell the API some information like the company file token and api version
+	$headers = array(
+		'x-myobapi-cftoken: '.$companyFileToken,
+		'x-myobapi-version: v2',
+	);
+ 
+	// setup the CURL session & pass it the URL we will call
+	$session = curl_init( $url );
+	// curl options
+	curl_setopt( $session, CURLOPT_HTTPHEADER, $headers ); // set the headers
+	curl_setopt( $session, CURLOPT_HEADER, false ); // tell curl NOT to return the headers (set to true to debug)
+	curl_setopt( $session, CURLOPT_RETURNTRANSFER, true );
+ 
+	// lets fire this off & get the response
+	$response = curl_exec( $session );
+	curl_close( $session ); // close the curl session to free up memory
+ 
+	// okay, lets pass the response back
+	return( $response );
+}
+
+/**
+ * Function toMoney
+ *
+ * Becuase windows can't do money_function()
+ * we use this instead
+**/
+function toMoney($val,$symbol='$',$r=2){
+
+
+    $n = $val; 
+    $c = is_float($n) ? 1 : number_format($n,$r);
+    $d = '.';
+    $t = ',';
+    $sign = ($n < 0) ? '-' : '';
+    $i = $n=number_format(abs($n),$r); 
+    $j = (($j = strlen($i)) > 3) ? $j % 3 : 0; 
+
+   return  $symbol.$sign .($j ? substr($i,0, $j) + $t : '').preg_replace('/(\d{3})(?=\d)/',"$1" + $t,substr($i,$j)) ;
+
 }
 
 
@@ -73,7 +102,6 @@ function getFileList() {
 
 	// use the getURL function to call the URL
 	$response = getURL($apiBaseURL);
-
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);
 
@@ -142,7 +170,7 @@ function getContactList($type) {
 	$type = ucfirst($type);
 
 	// use the getURL function to call the URL - remember we are calling the vars we need from the session vars
-	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/'.$type.'/', $_SESSION['username'], $_SESSION['password']);
+	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/Contact/'.$type.'/', $_SESSION['username'], $_SESSION['password']);
 
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);
@@ -177,7 +205,7 @@ function getContact($type, $contactId) {
 	$type = ucfirst($type);
 
 	// use the getURL function to call the URL - remember we are calling the vars we need from the session vars
-	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/'.$type.'/'.$contactId, $_SESSION['username'], $_SESSION['password']);
+	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/Contact/'.$type.'/'.$contactId, $_SESSION['username'], $_SESSION['password']);
 
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);
@@ -211,7 +239,7 @@ function saveContact($type, $contactId, $CoLastName, $FirstName, $IsActive, $Tax
 
 
 	// Lets setup the url we want to post to
-    $url =  $apiBaseURL.$_SESSION['companyFileGUID'].'/'.$type.'/'.$contactId;
+    $url =  $apiBaseURL.$_SESSION['companyFileGUID'].'/Contact/'.$type.'/'.$contactId;
     
     // urlencode parameters & add to url
     $params = 'CoLastName='.urlencode($CoLastName).'&FirstName='.urlencode($FirstName).'&IsActive='.urlencode($IsActive).'&TaxCodeId='.urlencode($TaxCodeId).'&FreightTaxCodeId='.urlencode($FreightTaxCodeId);
@@ -274,7 +302,7 @@ function searchContactList($type, $query) {
 
 
 	// use the getURL function to call the URL - remember we are calling the vars we need from the session vars
-	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/'.$type.'/?$'.$filter, $_SESSION['username'], $_SESSION['password']);
+	$response = getURL($apiBaseURL.$_SESSION['companyFileGUID'].'/Contact/'.$type.'/?$'.$filter, $_SESSION['username'], $_SESSION['password']);
 
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);

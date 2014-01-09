@@ -7,17 +7,16 @@
 //
 *******************************************/
 
-
 // quick SWITCH for setting vars when in localhost vs production
 switch($_SERVER['SERVER_NAME']) {
 	case "localhost":
 		// dev api details
-		$apiBaseURL   = "http://localhost:8080/WebAPI//";
+		$apiBaseURL   = "http://localhost:8080/AccountRight/";
 		$apiKey       = ""; // not used in this sample
 		$apiSecret    = ""; // not used in this sample
 
 		// dev page vars
-		$pageURL      = "http://localhost:8888/mycontacts/"; // URL to your PHP environment - I use MAMP that has 8888 as port
+		$pageURL      = "http://localhost/AccountRight_ContactSample_PHP/"; // URL to your PHP environment - I use MAMP that has 8888 as port
 	break;
 	default:
 		// production api details
@@ -30,4 +29,16 @@ switch($_SERVER['SERVER_NAME']) {
 	break;
 }
 
+$debug = false;
+
+// navigation vars
+$customerBtn = '';
+$customerIcon = '';
+$supplierBtn = '';
+$supplierIcon = '';
+$employeeBtn = '';
+$employeeIcon = '';
+
+// map options
+$showMap = false;
 $googleAPIKey = '<!-- PUT A GOOGLE PLACES API KEY HERE -->';
