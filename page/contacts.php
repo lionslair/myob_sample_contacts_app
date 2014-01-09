@@ -110,17 +110,20 @@ require_once('header.php');
 				
 				// lets loop through them
 				foreach ($contactList->Items as $customer) {
-					echo '<tr class="contactRow" onclick="document.location = \''.$pageURL.'contact/'.$type.'/'.$customer->Id.'/\';">';
+					echo '<tr class="contactRow" onclick="document.location = \''.$pageURL.'contact/'.$type.'/'.$customer->UID.'/\';">';
 					// show a different icon based on customer type
 					if( $customer->IsIndividual ){
 						echo '<td style="text-align: center;" class="contactCell"><i class="icon-user"></i></td>';
 					} else {
 						echo '<td style="text-align: center;" class="contactCell"><i class="icon-briefcase"></i></td>';
 					}
-    				echo '<td class="contactCell">'.$customer->CoLastName; // last name
+    				echo '<td class="contactCell">'; 
     				if( $customer->IsIndividual ) {
-    					// show their first name
-    					echo ', '.$customer->FirstName; // first name
+    					// show their last & first name
+    					echo $customer->LastName.', '.$customer->FirstName; // first name
+    				} else {
+    					// they are a company
+    					echo $customer->CompanyName;
     				}
     				echo '</td>';
     				//
@@ -145,7 +148,7 @@ require_once('header.php');
 
     				}
 
-    				echo '<td class="contactCell"><span class="label label-large '.$balanceBadge.' pull-right">'.money_format('$%i',$customer->CurrentBalance).'</span></td>'; // first name
+    				echo '<td class="contactCell"><span class="label label-large '.$balanceBadge.' pull-right">'.toMoney($customer->CurrentBalance).'</span></td>'; // first name
     				} // end if employee
 
     				echo '</tr>';
@@ -167,17 +170,19 @@ require_once('header.php');
 				
 				// lets loop through them
 				foreach ($contactList->Items as $customer) {
-					// in ARLive Cash Sales is included as a customer contact - lets skip it as it's not really
-					if (!($customer->CoLastName != 'Cash Sales')) { 
+					/*// in ARLive Cash Sales is included as a customer contact - lets skip it as it's not really
+					if (!( $customer->CoLastName != 'Cash Sales')) { 
         				continue;
-    				}
+    				}*/
 
-					echo '<tr class="iPhoneContact" style="cursor: pointer;" onclick="document.location = \''.$pageURL.'contact/'.$type.'/'.$customer->Id.'/\';">';
+					echo '<tr class="iPhoneContact" style="cursor: pointer;" onclick="document.location = \''.$pageURL.'contact/'.$type.'/'.$customer->UID.'/\';">';
     				// they will all have a lastname (or company name)
-    				echo '<td style="border-bottom: none; border-right: none;"><strong>'.$customer->CoLastName;
+    				echo '<td style="border-bottom: none; border-right: none;"><strong>';
     				// if they are an individual they'll also have a first name
-    				if( ($customer->IsIndividual) && (isset($customer->FirstName)) ){
-    					echo ', '.$customer->FirstName;
+    				if( ($customer->IsIndividual) && (isset($customer->FirstName)) ) {
+    					echo $customer->LastName.', '.$customer->FirstName;
+    				} else {
+    					echo $customer->CompanyName;
     				}
 
     				echo '</strong></td>'; // close the cell
@@ -185,7 +190,7 @@ require_once('header.php');
     				echo '<td style="border-left: none; border-right: none;">'.$customer->Addresses[0]->State.'</span></td>'; // phone number
 
     				// we want the user to know they can click this - so put an ARROW in the cell
-    				echo '<td rowspan="2" style="text-align: center; border-left: none;" class="contactCell"><a class="btn btn-primary" href="'.$pageURL.'contact/'.$type.'/'.$customer->Id.'/"><i class="icon-chevron-right icon-white"></i></a></td>';
+    				echo '<td rowspan="2" style="text-align: center; border-left: none;" class="contactCell"><a class="btn btn-primary" href="'.$pageURL.'contact/'.$type.'/'.$customer->UID.'/"><i class="icon-chevron-right icon-white"></i></a></td>';
     				echo '</tr>';
     				echo '<tr><td colspan="2"  style="border-top: none; border-right: none; padding-top: 0px;"><span class="btn btn-mini">'.str_replace(' ', '&nbsp;', $customer->Addresses[0]->Phone1).'</span>';
     				// // lets not show this for the employee
@@ -198,7 +203,7 @@ require_once('header.php');
     					// if it's lets than $0 show it as green - use the bootstrap SUCCESS label
     					$balanceBadge = 'label-success';
     				}
-    				echo '<div class="pull-right">Balance: <span class="label label-large '.$balanceBadge.'">'.money_format('$%i',$customer->CurrentBalance).'</span></div>';
+    				echo '<div class="pull-right">Balance: <span class="label label-large '.$balanceBadge.'">'.toMoney($customer->CurrentBalance).'</span></div>';
     				} // end if employee
     				echo '</td></tr>';
     				
