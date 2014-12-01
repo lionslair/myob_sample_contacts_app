@@ -11,13 +11,13 @@
 
 /**
  * Function Name: getURL
- * 
+ *
  * This function is an example of calling a URL with optional
  *   username and password for basic header authentication
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   $url (string) a url to the api you want to call
  *   $username (string) (optional) the username for authentication
  *   $password (string) (optional) the password for authentication
@@ -28,32 +28,33 @@
  * TODO:
  *   Add error checking on response
  */
-function getURL($url, $companyFileUsername = null, $companyFilePassword = null) {
- 
+function getURL($url, $companyFileUsername = 'nathan@lionslair.net.au', $companyFilePassword = 'lm2225ehO&pM*Q4y0tT5G') {
+
 	// if we have a username we need to base64_encode it - so lets check if it's set
 	if( isset( $companyFileUsername ) ) {
 		$companyFileToken = base64_encode( $companyFileUsername.':'.$companyFilePassword );
 	} else {
 		$companyFileToken = '';
 	}
- 
+
 	// we setup some headers to tell the API some information like the company file token and api version
 	$headers = array(
 		'x-myobapi-cftoken: '.$companyFileToken,
 		'x-myobapi-version: v2',
 	);
- 
+
 	// setup the CURL session & pass it the URL we will call
 	$session = curl_init( $url );
 	// curl options
 	curl_setopt( $session, CURLOPT_HTTPHEADER, $headers ); // set the headers
 	curl_setopt( $session, CURLOPT_HEADER, false ); // tell curl NOT to return the headers (set to true to debug)
 	curl_setopt( $session, CURLOPT_RETURNTRANSFER, true );
- 
+
 	// lets fire this off & get the response
 	$response = curl_exec( $session );
+  print '<pre>debug: '.$response.'</pre>';
 	curl_close( $session ); // close the curl session to free up memory
- 
+
 	// okay, lets pass the response back
 	return( $response );
 }
@@ -67,13 +68,13 @@ function getURL($url, $companyFileUsername = null, $companyFilePassword = null) 
 function toMoney($val,$symbol='$',$r=2){
 
 
-    $n = $val; 
+    $n = $val;
     $c = is_float($n) ? 1 : number_format($n,$r);
     $d = '.';
     $t = ',';
     $sign = ($n < 0) ? '-' : '';
-    $i = $n=number_format(abs($n),$r); 
-    $j = (($j = strlen($i)) > 3) ? $j % 3 : 0; 
+    $i = $n=number_format(abs($n),$r);
+    $j = (($j = strlen($i)) > 3) ? $j % 3 : 0;
 
    return  $symbol.$sign .($j ? substr($i,0, $j) + $t : '').preg_replace('/(\d{3})(?=\d)/',"$1" + $t,substr($i,$j)) ;
 
@@ -82,13 +83,13 @@ function toMoney($val,$symbol='$',$r=2){
 
 /**
  * Function Name: getFileList
- * 
+ *
  * This function is an example of calling a the base URL
  *   which will return a list of all the MYOB ARLive company files
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   nothing
  *
  * Returns:
@@ -111,14 +112,14 @@ function getFileList() {
 
 /**
  * Function Name: doLogin
- * 
+ *
  * This function is an example of calling a URL with authentication
  *    it doesn't really do the login, it checks that the username & password let
  *    the user request a generic URL
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   nothing
  *
  * Returns:
@@ -142,19 +143,19 @@ function doLogin($username, $password) {
 		return(TRUE);
 	}
 
-	
+
 }
 
 
 /**
  * Function Name: getContactList
- * 
+ *
  * This function is an example of calling fetching the contact lists from ARLive
  *    it will pull from the 3 different types & returns their responses
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   $type (string) - this tells us if it's a Customer, Supplier or Employee
  *
  * Returns:
@@ -174,21 +175,21 @@ function getContactList($type) {
 
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);
-	
+
 	// return the response
 	return($response);
-	
+
 }
 
 /**
  * Function Name: getContact
- * 
+ *
  * This function is an example of calling fetching a specific contact from ARLive
  *    it will pull from the 3 different types & returns their responses
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   $type (string) - this tells us if it's a Customer, Supplier or Employee
  *   $contact Id (string) - this is the customer ID from ARLive
  *
@@ -209,21 +210,21 @@ function getContact($type, $contactId) {
 
 	// it returned as JSON so lets decode it
 	$response = json_decode($response);
-	
+
 	// return the response
 	return($response);
-	
+
 }
 
 /**
  * Function Name: saveContact
- * 
+ *
  * This function is an example of POSTING to a URL with to save data
  *    for this example we only save/update a select few iterms
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   $url (string) a url to the api you want to call
  *   $username (string) (optional) the username for authentication
  *   $password (string) (optional) the password for authentication
@@ -240,26 +241,26 @@ function saveContact($type, $contactId, $CoLastName, $FirstName, $IsActive, $Tax
 
 	// Lets setup the url we want to post to
     $url =  $apiBaseURL.$_SESSION['companyFileGUID'].'/Contact/'.$type.'/'.$contactId;
-    
+
     // urlencode parameters & add to url
     $params = 'CoLastName='.urlencode($CoLastName).'&FirstName='.urlencode($FirstName).'&IsActive='.urlencode($IsActive).'&TaxCodeId='.urlencode($TaxCodeId).'&FreightTaxCodeId='.urlencode($FreightTaxCodeId);
 
-    $session = curl_init($url); 
+    $session = curl_init($url);
 
     // Tell curl to use HTTP POST
-    curl_setopt ($session, CURLOPT_POST, true); 
+    curl_setopt ($session, CURLOPT_POST, true);
     // Tell curl that this is the body of the POST
-    curl_setopt ($session, CURLOPT_POSTFIELDS, $params); 
+    curl_setopt ($session, CURLOPT_POSTFIELDS, $params);
     // setup the authentication
     curl_setopt($session, CURLOPT_USERPWD, $_SESSION['username'] . ":" . $_SESSION['password']);
     // Tell curl not to return headers, but do return the response
-    curl_setopt($session, CURLOPT_HEADER, false); 
+    curl_setopt($session, CURLOPT_HEADER, false);
     curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
     curl_setopt(CURLOPT_SSL_VERIFYPEER, true); // enforce that when we use SSL the verification is correct
 
 
 
-    $response = curl_exec($session); 
+    $response = curl_exec($session);
   	curl_close($session);
 
   	return($response);
@@ -267,13 +268,13 @@ function saveContact($type, $contactId, $CoLastName, $FirstName, $IsActive, $Tax
 
 /**
  * Function Name: searchContactList
- * 
+ *
  * This function is an example of searching the contact lists from ARLive
  *    it will search based on type & returns their responses
- *   
+ *
  * Supplied as an example only, not intended for production code
  *
- * Expects: 
+ * Expects:
  *   $type (string) - this tells us if it's a Customer, Supplier or Employee
  *   $query (string) - this is what the user searched for
  *
@@ -308,5 +309,5 @@ function searchContactList($type, $query) {
 	$response = json_decode($response);
 	// return the response
 	return($response);
-	
+
 }

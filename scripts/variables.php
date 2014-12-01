@@ -18,6 +18,15 @@ switch($_SERVER['SERVER_NAME']) {
 		// dev page vars
 		$pageURL      = "http://localhost/AccountRight_ContactSample_PHP/"; // URL to your PHP environment - I use MAMP that has 8888 as port
 	break;
+	case "account-right.lionslair.net.au":
+		// dev api details
+		$apiBaseURL   = "https://api.myob.com/accountright/";
+		$apiKey       = "9yg8gjumbww5j7yrfxk83ypz"; // not used in this sample
+		$apiSecret    = "6b5EM7w8yuxrGNGZVJ4DDCbP"; // not used in this sample
+
+		// dev page vars
+		$pageURL      = "http://account-right.lionslair.net.au/"; // URL to your PHP environment - I use MAMP that has 8888 as port
+	break;
 	default:
 		// production api details
 		$apiBaseURL   = "<!-- CLOUD API URL HERE -->";

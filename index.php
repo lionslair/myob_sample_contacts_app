@@ -12,7 +12,7 @@
 //       Bootstrap from Twitter: http://twitter.github.com/bootstrap/
 //       jQuery: http://www.jquery.com
 //
-//    Copyright (2013) MYOB Technology 
+//    Copyright (2013) MYOB Technology
 //
 *******************************************/
 error_reporting(0);
@@ -81,7 +81,7 @@ switch($page) {
         break;
 
     default: // this is the fault page that loads up and lists the company files found in the director
-       
+
       // get the header
       require_once('header.php');
       // get the page
